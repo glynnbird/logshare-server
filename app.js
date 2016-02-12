@@ -118,8 +118,9 @@ io.on('connection', function (socket) {
     }
     var channelname = stub + data.id;
     var metaname = channelname + "_meta";
-    redis.exists(metaname, function (err, data) {
-      if (err || data == 0) {
+    redis.exists(metaname, function (err, d) {
+      if (err || d == 0) {
+        socket.emit("baddata", { id: data.id});
         debug("Socket.io: Invalid subscribe request", data.id)
         return;      
       }
