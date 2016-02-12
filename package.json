@@ -1,6 +1,6 @@
 {
   "name": "logshare-server",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Simple logsharing utility - server-side code",
   "scripts": {
     "start": "node app.js"
