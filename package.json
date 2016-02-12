@@ -1,0 +1,23 @@
+{
+  "name": "logshare-server",
+  "version": "0.1.2",
+  "description": "Simple logsharing utility - server-side code",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "async": "^1.5.2",
+    "cfenv": "1.0.x",
+    "express": "4.12.x",
+    "cloudant": "^1.4.1",
+    "hashids": "^1.0.2",
+    "jade": "^1.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glynnbird/logshare-server"
+  },
+  "engines": {
+    "node": "0.12.x"
+  }
+}

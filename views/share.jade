@@ -1,0 +1,13 @@
+doctype html
+html(lang="en")
+head
+  include head.jade
+  script(src="https://cdn.jsdelivr.net/pouchdb/5.2.1/pouchdb.min.js")
+  script(src="/js/logshare.js")
+body
+  include nav.jade
+
+  script var dburl="#{dburl}";
+  
+  div.container-fluid.logs
+   

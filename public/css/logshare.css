@@ -1,0 +1,8 @@
+body { margin-top:70px;}
+
+.logs {
+  display: block;
+  font-family: monospace;
+  white-space: pre;
+  margin: 1em 0;
+}
