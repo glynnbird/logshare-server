@@ -7,11 +7,13 @@
   },
   "dependencies": {
     "async": "^1.5.2",
+    "body-parser": "^1.15.0",
     "cfenv": "1.0.x",
     "express": "4.12.x",
-    "cloudant": "^1.4.1",
     "hashids": "^1.0.2",
-    "jade": "^1.11.0"
+    "jade": "^1.11.0",
+    "moment": "^2.11.2",
+    "node-redis": "^0.1.7"
   },
   "repository": {
     "type": "git",
