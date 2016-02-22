@@ -13,7 +13,7 @@ Simple log-sharing utility built with Node.js and Cloudant.
 
 Put the URL in your browser and share it with the people you want to share your data with.
 
-![Demo](https://github.com/glynnbird/logshare/raw/master/public/img/demo.gif)
+![Demo](https://github.com/glynnbird/logshare-server/raw/master/public/img/demo.gif)
 
 Alternatively, they can run logshare too like this:
 
