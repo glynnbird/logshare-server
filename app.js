@@ -7,6 +7,14 @@ var express = require('express'),
 
 // create a new express server
 var app = express();
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+var redis = require('./lib/redis.js')();
+app.use(session({
+  store: new RedisStore({ client: redis}),
+  name: 'JSESSIONID', 
+  secret: 'logshare'
+}));
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
