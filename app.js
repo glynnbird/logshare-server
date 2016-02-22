@@ -2,6 +2,7 @@ var express = require('express'),
    cfenv = require('cfenv'),
    moment = require('moment'),
    debug = require('debug')('logshare'),
+   dbtools = require('./lib/dbtools.js'),
    async = require('async');
 
 // create a new express server
@@ -82,10 +83,16 @@ app.get('/stop/:id', function(req,res) {
       return res.status(404).send({ok: false});
     } else {
       data.end=moment().format();
+      var start = moment(data.start);
+      var end = moment(data.end);
+      data.bytes = parseInt(data.bytes);
+      data.messages = parseInt(data.messages);
+      data.duration = end.diff(start, 'seconds');
       debug("Stopped", req.params.id, data);
-      redis.del(metaname);
-      redispubsub.unsubscribe(channelname);
-      res.send({ok: true, id: req.query.id})
+      dbtools.log(data, function(err, data) {
+        redis.del(metaname);
+        res.send({ok: true, id: req.query.id})
+      });
     }
   });
 });
