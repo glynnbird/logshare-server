@@ -43,6 +43,24 @@ app.get('/start', function(req,res) {
              channelname: channelname});
 });
 
+
+var publish = function(id, body, callback) {
+  debug('POST /publish/:id', id, body);
+  var channelname = stub + id;
+  var metaname = channelname + "_meta";
+  redis.exists(metaname, function (err, data) {
+    if (err || data == 0) {
+      debug("Invalid token", id)
+      return callback(true, {ok: false, err: "invalid token"});      
+    }
+    redis.publish(channelname, body);
+    redis.hincrby(metaname, 'messages', 1);
+    redis.hincrby(metaname, 'bytes', body.length);
+    debug("Published", body.length, "bytes to", id);
+    callback(null, {ok: true});
+  })
+};
+
 // create a new database, make it world read/write
 app.post('/publish/:id', bodyParser.urlencoded(), function(req,res) {
   debug('POST /publish/:id');
@@ -52,21 +70,12 @@ app.post('/publish/:id', bodyParser.urlencoded(), function(req,res) {
   if (typeof req.body.body == 'undefined' || req.body.body.length == 0) {
     return res.status(404).send({ok: false, err: "no body parameter found"});
   }
-  var body = req.body.body;
-  var channelname = stub + req.params.id;
-  var metaname = channelname + "_meta";
-  redis.exists(metaname, function (err, data) {
-    if (err || data == 0) {
-      debug("Invalid token", req.params.id)
+  publish(req.params.id, req.body.body, function(err, data) {
+    if (err) {
       return res.status(404).send({ok: false, err: "invalid token"});      
     }
-    redis.publish(channelname, body);
-    redis.hincrby(metaname, 'messages', 1);
-    redis.hincrby(metaname, 'bytes', body.length);
-    debug("Published", body.length, "bytes to", req.params.id);
-    res.send({ ok: true});
+    res.send(data);
   });
-
 });
 
 // delete the database
@@ -136,6 +145,15 @@ io.on('connection', function (socket) {
       debug("Socket.io: New livesocket request", socket.id, "(", Object.keys(livesockets).length, ")")      
     });
   });
+  
+  socket.on('publish', function(data) {
+    debug("Socket.io: publish", socket.id);
+    publish(data.id, data.body, function(err, data) {
+      if (err) {
+        socket.emit("baddata", { id: data.id});
+      }
+    })
+  })
   
   // when it dies
   socket.on('disconnect', function(reason) {
