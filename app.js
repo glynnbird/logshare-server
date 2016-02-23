@@ -53,7 +53,6 @@ app.get('/start', function(req,res) {
 
 
 var publish = function(id, body, callback) {
-  debug('POST /publish/:id', id, body);
   var channelname = stub + id;
   var metaname = channelname + "_meta";
   redis.exists(metaname, function (err, data) {
