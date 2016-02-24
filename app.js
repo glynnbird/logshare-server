@@ -53,10 +53,18 @@ app.get('/start', function(req,res) {
              channelname: channelname});
 });
 
+var calculateChannelname = function(id) {
+  return stub + id;
+};
+
+var calculateMetaname = function(channelname) {
+  return channelname + "_meta";
+};
+
 
 var publish = function(id, body, callback) {
-  var channelname = stub + id;
-  var metaname = channelname + "_meta";
+  var channelname = calculateChannelname(id);
+  var metaname = calculateMetaname(channelname);
   redis.exists(metaname, function (err, data) {
     if (err || data == 0) {
       debug("Invalid token", id)
@@ -96,8 +104,8 @@ app.get('/stop/:id', function(req,res) {
   if (!req.params.id) {
     return res.status(404);
   }
-  var channelname = stub + req.params.id;
-  var metaname = channelname + "_meta";
+  var channelname = calculateChannelname(req.params.id);
+  var metaname = calculateMetaname(channelname);
   redis.hgetall(metaname, function(err, data) {
     if (err || Object.keys(data).length == 0) {
       debug('Invalid token', req.params.id);
@@ -120,8 +128,8 @@ app.get('/stop/:id', function(req,res) {
 
 app.get('/share/:id', function(req,res) {
   debug('GET /share/:id');
-  var channelname = stub + req.params.id;
-  var metaname = channelname + "_meta";
+  var channelname = calculateChannelname(req.params.id);
+  var metaname = calculateMetaname(channelname);
   redis.exists(metaname, function (err, data) {
     if (err || data == 0) {
       debug('Invalid token', req.params.id);
@@ -144,8 +152,8 @@ io.on('connection', function (socket) {
     if (!data || !data.id) {
       return;
     }
-    var channelname = stub + data.id;
-    var metaname = channelname + "_meta";
+    var channelname = calculateChannelname(data.id);
+    var metaname = calculateMetaname(channelname);
     redis.exists(metaname, function (err, d) {
       if (err || d == 0) {
         socket.emit("baddata", { id: data.id});
