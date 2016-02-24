@@ -38,13 +38,15 @@ redispubsub.psubscribe(stub+"*");
 app.get('/start', function(req,res) {
   debug('GET /start');
   var id = uuid.generate();
+  debug('New token',id);
   var channelname = stub + id;
   var metaname = channelname + "_meta";
   var meta = { start: moment().format(), end: null, messages: 0, bytes: 0 };
-  redis.hset(metaname, 'start', moment().format());
-  redis.hset(metaname, 'messages', 0);
-  redis.hset(metaname, 'bytes', 0);
-  debug('New token',id);
+  redis.hmset(metaname, {
+    start: moment().format(),
+    messages: 0,
+    bytes: 0
+  });
   res.send({ ok: true, 
              id: id, 
              shareurl: appEnv.url + '/share/' + id, 
@@ -60,12 +62,15 @@ var publish = function(id, body, callback) {
       debug("Invalid token", id)
       return callback(true, {ok: false, err: "invalid token"});      
     }
-    redis.publish(channelname, body);
-    redis.hincrby(metaname, 'messages', 1);
-    redis.hincrby(metaname, 'bytes', body.length);
+    redis.multi()
+      .publish(channelname, body)
+      .hincrby(metaname, 'messages', 1)
+      .hincrby(metaname, 'bytes', body.length)
+      .exec(function(err, replies) {
+        callback(null, {ok: true});
+      })
     debug("Published", body.length, "bytes to", id);
-    callback(null, {ok: true});
-  })
+  });
 };
 
 // create a new database, make it world read/write
