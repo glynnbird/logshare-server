@@ -5,18 +5,25 @@ var express = require('express'),
    dbtools = require('./lib/dbtools.js'),
    async = require('async');
 
-// create a new express server
+// create a new express server with Redis sessions
 var app = express();
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var redis = require('./lib/redis.js')();
-app.use(session({
+var sess = session({
   store: new RedisStore({ client: redis}),
   name: 'JSESSIONID', 
   secret: 'logshare'
-}));
+});
+app.use(sess);
 var server = require('http').Server(app);
+
+// socket.io
+var ios = require('./lib/ios.js');
 var io = require('socket.io')(server);
+io.use(ios(sess)); // session support - see socket.io-express-session
+
+// express middleware
 var bodyParser = require('body-parser');
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'jade');
