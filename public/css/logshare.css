@@ -1,8 +1,51 @@
-body { margin-top:70px;}
+
+.room { margin-top:70px;}
 
 .logs {
   display: block;
   font-family: monospace;
   white-space: pre;
   margin: 1em 0;
+}
+
+.world {
+  height:516px;
+  background-color:#231F20;
+  background-image: url("/img/world.png");
+  background-repeat: no-repeat;
+  width:100%;
+  background-position: right  top; 
+}
+
+.logsharelogo {
+  background-image: url("/img/logsharelogo.png");
+  width:155px;
+  height:45px;
+  margin-left:50px;
+  padding-top:45px;
+}
+
+.fullwidth {
+  padding-left:0px;
+  padding-right:0px;
+}
+
+.title {
+  margin-left:100px;
+  padding-top:250px;
+  color:white;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.subtitle {
+  margin-left: 100px;
+  color: #999;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+h2 {
+  padding-top:40px;
+  color: #999;
 }
