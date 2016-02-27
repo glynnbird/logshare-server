@@ -17,6 +17,11 @@
   background-position: right  top; 
 }
 
+.offblack {
+  background-color:#231F20;
+  height: 70px;
+}
+
 .logsharelogo {
   background-image: url("/img/logsharelogo.png");
   width:155px;
